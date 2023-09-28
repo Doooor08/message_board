@@ -77,4 +77,12 @@ class PagesController extends AppController {
 			throw new NotFoundException();
 		}
 	}
+	public function authRegister() {
+		$this->layout = 'authLayout';
+		$this->set('title', 'Register');
+	}
+	public function authLogin() {
+		$this->layout = 'authLayout';
+		$this->set('title', 'Login');
+	}
 }
