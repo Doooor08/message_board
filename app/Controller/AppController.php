@@ -20,7 +20,6 @@
  */
 
 App::uses('Controller', 'Controller');
-
 /**
  * Application Controller
  *
@@ -32,17 +31,22 @@ App::uses('Controller', 'Controller');
  */
 class AppController extends Controller {
     public $components = array(
-        'Flash',
         'Auth' => array(
             'authenticate' => array(
                 'Form' => array(
                     'passwordHasher' => 'Blowfish'
                 )
             )
-        )
+        ),
+        'Session' => array(
+            'defaults' => 'php',
+            'cookie' => 'user_session',
+            'timeout' => 3600, // 1 hour
+            'cookieTimeout' => -1 // No expiry until user logs out or session destroyed
+        ),
     );
 
     public function beforeFilter() {
-        $this->Auth->allow('index', 'view');
+        $this->Auth->allow('authRegister', 'authLogin');
     }
 }

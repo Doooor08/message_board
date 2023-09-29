@@ -26,20 +26,36 @@ $(document).ready(function() {
             url: `${BASE_URL}register/store`,
             data: JSON.stringify(data),
             success: function(res) {
+                if(res.status == 201) {
+                    window.location.replace(`${BASE_URL}success`);
+                }
+            },
+            error: function(res) {
                 console.log(res);
+            },
+        });
+    });
+
+    $('#auth_login').on('submit', function(e) {
+        e.preventDefault();
+
+        const data = {
+            email: e.currentTarget.email.value,
+            password: e.currentTarget.pass.value,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: `${BASE_URL}login/validate`,
+            data: JSON.stringify(data),
+            success: function(res) {
+                if(res.status == 200) {
+                    window.location.replace(`${BASE_URL}success`);
+                }
             },
             error: function(res) {
                 console.log(res);
             },
         })
     });
-
-    $('#auth_login').on('submit', function(e) {
-        e.preventDefault();
-        console.log(e.currentTarget);
-    });
-
-    function validateCredentials() {
-
-    }
 });

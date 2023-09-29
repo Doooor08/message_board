@@ -32,9 +32,12 @@
 	Router::connect('/register', array('controller' => 'pages', 'action' => 'authRegister'));
 	Router::connect('/register/store', array('controller' => 'auth', 'action' => 'register'));
 	Router::connect('/login', array('controller' => 'pages', 'action' => 'authLogin'));
-	Router::connect('/login/validate', array('controller' => 'pages', 'action' => 'login'));
+	Router::connect('/login/validate', array('controller' => 'auth', 'action' => 'login'));
 	
-	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	Router::connect('/success', array('controller' => 'pages', 'action' => 'authSuccess'));
+	Router::connect('/home', array('controller' => 'pages', 'action' => 'index'));
+
+	Router::connect('/logout', array('controller' => 'auth', 'action' => 'logout'));
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

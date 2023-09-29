@@ -77,6 +77,7 @@ class PagesController extends AppController {
 			throw new NotFoundException();
 		}
 	}
+	// Auth functions: sessions not required
 	public function authRegister() {
 		$this->layout = 'authLayout';
 		$this->set('title', 'Register');
@@ -84,5 +85,18 @@ class PagesController extends AppController {
 	public function authLogin() {
 		$this->layout = 'authLayout';
 		$this->set('title', 'Login');
+	}
+	public function authSuccess() {
+		$this->layout = 'authLayout';
+		$this->set('title', 'Success');
+	}
+	// Main page functions: sessions are required
+	public function index() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Home');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
 	}
 }

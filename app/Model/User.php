@@ -38,20 +38,32 @@ class User extends AppModel {
         )
     );
 
+    // Register
     public function beforeSave($options = array()) {
         if (isset($this->data['User']['password'])) {
-            $passwordHasher = new BlowfishPasswordHasher();
-            $this->data['User']['password'] = $passwordHasher->hash(
+            $passwordHash = new BlowfishPasswordHasher();
+            $this->data['User']['password'] = $passwordHash->hash(
                 $this->data['User']['password']
             );
         }
-        $this->data['User']['created_at'] = self::getDate();
+        $this->data['User']['created_at'] = $this->getDate();
         $this->data['User']['user_id'] = self::GenerateUserID();
     
         return true;
     }
-    private function getDate() {
-        date_default_timezone_set('Asia/Manila');
+
+    // Login: Verify the password.
+    // $password = Password Input
+    // $passwordHashed = Hashed password fetched from database
+    public function verifyPassword($password, $passwordHashed) {
+        $passwordHasher = new BlowfishPasswordHasher();
+        if ($passwordHasher->check($password, $passwordHashed)) {
+            return true;
+        }
+
+        return false; 
+    }
+    public function getDate() {
         return date('Y-m-d G:i:s');
     }
     private function GenerateUserID() {
