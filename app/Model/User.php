@@ -1,8 +1,10 @@
 <?php
 App::uses('AppModel', 'Model');
-App::uses('BlowfishPasswordHasher', 'Controller/Auth');
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
 class User extends AppModel {
+    public $useTable = 'tbl_users';
+
     public $validate = array(
         'name' => array(
             'required' => array(

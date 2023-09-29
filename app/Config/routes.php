@@ -32,6 +32,7 @@
 	Router::connect('/register', array('controller' => 'pages', 'action' => 'authRegister'));
 	Router::connect('/register/store', array('controller' => 'auth', 'action' => 'register'));
 	Router::connect('/login', array('controller' => 'pages', 'action' => 'authLogin'));
+	Router::connect('/login/validate', array('controller' => 'pages', 'action' => 'login'));
 	
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 /**

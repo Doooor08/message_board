@@ -7,23 +7,33 @@ class AuthController extends AppController {
     
     public function register() {
         if ($this->request->is('post')) {
-            $this->User->set($this->request->data);
+            $data = $this->request->input('json_decode', true);
+            $this->User->set($data);
 
-            if ($this->User->save($this->request->data)) {
+            if ($this->User->save($data)) {
+                http_response_code(201);
                 $response = array(
                     'status' => 201,
                     'message' => 'Registration successful',
                 );
             } else {
+                http_response_code(422);
                 $response = array(
                     'status' => 422,
-                    'message' => 'Registration failed',
+                    'message' => 'Unprocessable Content: Registration failed',
                 );
             }
-            $this->autoRender = false;
-            $this->response->type('json');
-            $this->response->body(json_encode($response));
         }
+        else {
+            http_response_code(405);
+            $response = array(
+                'status' => 405,
+                'message' => 'Method not Allowed',
+            );
+        }
+        $this->autoRender = false;
+        $this->response->type('json');
+        $this->response->body(json_encode($response));
     }
 
     public function login() {
@@ -36,6 +46,16 @@ class AuthController extends AppController {
                 $this->Flash->error(__('Invalid username or password, try again'));
             }
         }
+        else {
+            http_response_code(405);
+            $response = array(
+                'status' => 405,
+                'message' => 'Method not Allowed',
+            );
+        }
+        $this->autoRender = false;
+        $this->response->type('json');
+        $this->response->body(json_encode($response));
     }
     
     public function logout() {

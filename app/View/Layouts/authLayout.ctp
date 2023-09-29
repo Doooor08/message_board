@@ -24,6 +24,8 @@
 			<div class="text-center pb-2">2023 &copy; <a href="#" class="text-decoration-none">Sample Website</a></div>
 		</div>
 	</div>
+	<?php
+	?>
 	<script>
 		const BASE_URL = '<?php echo Router::url('/',true);?>';
 	</script>
