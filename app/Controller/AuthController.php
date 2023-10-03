@@ -110,8 +110,9 @@ class AuthController extends AppController {
     private function setSession($data) {
         $storeUserData = $this->User->find('first', array(
             'fields' => array(
-                'User.name',
+                'User.id',
                 'User.user_id',
+                'User.name',
                 'User.email',
                 'User.password',
                 'User.created_at',

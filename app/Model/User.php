@@ -41,7 +41,7 @@ class User extends AppModel {
     // Register: Hash password
     // Then set user_id and created_at
     public function beforeSave($options = array()) {
-        if ($this->id === null && isset($this->data['User']['password'])) {
+        if($this->id === null && isset($this->data['User']['password'])) {
             $passwordHash = new BlowfishPasswordHasher();
             $this->data['User']['password'] = $passwordHash->hash(
                 $this->data['User']['password']

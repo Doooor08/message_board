@@ -57,102 +57,113 @@ class UserController extends AppController {
     public function update() {
         $this->autoRender = false;
         if ($this->request->is('post')) {
-        
-        // Your code to process the file and other data goes here
             $name = $this->request->data['name'];
+            $birthdate = $this->request->data['birthdate'];
+            $dateTime = DateTime::createFromFormat('m/d/Y', $birthdate);
+            $birthdate = $dateTime->format('Y-m-d');
+            $gender = $this->request->data['gender'] ?? null;
+            $gender = ($gender === 'male') ? 'M' : (($gender === 'female') ? 'F' : null);           
+            $description = $this->request->data['description'];
             $file = $this->request->form['photo'];
-            $uploadPath = WWW_ROOT . 'img' . DS . 'avatars' . DS;
-
-            // Check if the file is an image (you can add more validation)
-            if (is_uploaded_file($file['tmp_name']) && exif_imagetype($file['tmp_name'])) {
-                $fileName = uniqid() . $file['name'];
-
-                // Move and save the file
-                if (move_uploaded_file($file['tmp_name'], $uploadPath . $fileName)) {
-                    // File upload was successful
-                    $response = array(
-                        'message' => 'File uploaded successfully',
-                        'file_name' => $fileName,
-                    );
-                } else {
-                    // Error while moving the file
-                    $response = array(
-                        'message' => 'Error uploading file',
-                    );
-                }
-            } else {
-                // Invalid file format
+            
+            // Check if file exists
+            if (!file_exists($file['tmp_name'])) {
+                http_response_code(404);
                 $response = array(
-                    'message' => 'Invalid file format or file not uploaded',
+                    'status' => 404,
+                    'message' => 'File not found',
                 );
+                return json_encode($response);
+            }
+            
+            // Check if the file is an image and matches the allowed extensions
+            $allowedExt = array('jpeg', 'jpg', 'png', 'gif');
+            $getFileExt = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            
+            if(!in_array($getFileExt, $allowedExt)) {
+                http_response_code(422);
+                $response = array(
+                    'status' => 422,
+                    'message' => 'File not uploaded: Invalid file format',
+                );
+                return json_encode($response);
             }
 
+            // Attempt to upload file to webroot/img/avatars/
+            $upload = self::uploadFile($file);
+            if(!$upload['success']) {
+                http_response_code(422);
+                $response = array(
+                    'status' => 422,
+                    'message' => 'File not uploaded: Failed to upload file',
+                );
+                return json_encode($response);
+            }
+            $filename = $upload['filename'];
 
+            $this->User->id = $this->Session->read('User.id');
 
+            $updateUser = $this->User->updateAll(
+                array(
+                    'User.name' => "'". $name. "'",
+                    'User.updated_at' => "'". $this->User->getDate(). "'",
+                ),
+                array('User.id' => $this->Session->read('User.id'))
+            );
 
-            // $response = array(
-            //                 'message' => 'Function called',
-            //                 'data' => json_encode($name),
-            //                 'file' => json_encode($file)
-            //             );
+            $this->UserData->id = $this->Session->read('User.id');
+            
+            $updateUserData = $this->UserData->updateAll(array(
+                'UserData.photo' => "'" . $filename . "'",
+                'UserData.gender' => "'" . $gender . "'",
+                'UserData.birthdate' => "'" . $birthdate . "'",
+                'UserData.description' => "'" . $description . "'",
+                ),
+                array(
+                    'UserData.user_id' => $this->Session->read('User.user_id')
+            ));
 
-            // // Check if a file was uploaded
-            // if (!empty($data['photo']['name'])) {
-            //     $file = $data['photo']; // Get the uploaded file data
-            //     $user_id = $this->Session->read('User.user_id');
-    
-            //     // Define the upload directory (you can adjust it to your needs)
-            //     $uploadDir = WWW_ROOT . 'avatars' . DS;
-            //     $uploadPath = $uploadDir . $user_id . DS;
-    
-            //     // Ensure the directory exists, or create it
-            //     if (!file_exists($uploadPath)) {
-            //         mkdir($uploadPath, 0777, true);
-            //     }
-    
-            //     // Generate a unique file name
-            //     $fileName = uniqid() . '_' . $file['name'];
-    
-            //     // Move the uploaded file to the desired location
-            //     if (move_uploaded_file($file['tmp_name'], $uploadPath . $fileName)) {
-            //         // File uploaded successfully
-            //         // You can save the file path to the database or perform other actions
-    
-            //         // Update the 'photo' field in your User model with the file path
-            //         $this->User->id = $user_id;
-            //         $this->User->saveField('photo', $uploadPath . $fileName);
-    
-            //         // Respond with a success message or redirect
-            //         $response = array(
-            //             'status' => 200,
-            //             'message' => 'File uploaded successfully',
-            //         );
-            //     } else {
-            //         // File upload failed
-            //         $response = array(
-            //             'status' => 500,
-            //             'message' => 'File upload failed',
-            //         );
-            //     }
-            // } else {
-            //     // No file was uploaded, handle accordingly
-            //     $response = array(
-            //         'status' => 400,
-            //         'message' => 'No file uploaded',
-            //     );
-            // }
+            if(!$updateUser || !$updateUserData) {
+                http_response_code(422);
+                $response = array(
+                    'status' => 422,
+                    'message' => 'Failed to update user profile',
+                );
+                return json_encode($response); 
+            }
+
+            http_response_code(200);
+                $response = array(
+                    'status' => 200,
+                    'message' => 'User Profile updated!',
+                );
+                return json_encode($response); 
         } else {
-            // Handle invalid request method
+            http_response_code(405);
             $response = array(
                 'status' => 405,
                 'message' => 'Method not Allowed',
             );
         }
-    
-        // Respond with JSON
+
         $this->response->type('json');
         $this->response->body(json_encode($response));
     }
     
+    private function uploadFile($file) {
+        $getDate = date('Ymd');
+        $randomBytes = random_bytes(4);
+        $randName = strtoupper(bin2hex($randomBytes));
+        $getFileExt = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $uploadPath = WWW_ROOT . 'img' . DS . 'avatars' . DS;
+        $fileName = "IMG_" . $getDate . "_" . $randName. "." . $getFileExt;
+
+        if(move_uploaded_file($file['tmp_name'], $uploadPath . $fileName)) {
+            return ['success' => true, 'filename' => $fileName];
+        } 
+
+        return false;
+
+    }
 }
 ?>
