@@ -28,5 +28,10 @@ $(document).ready(function() {
     });
     
     // Date Picker
-    $('#birthdate').datepicker();
+    $('#birthdate').datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        changeMonth: true,
+        changeYear: true
+    });
 })
