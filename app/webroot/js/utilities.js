@@ -34,4 +34,30 @@ $(document).ready(function() {
         changeMonth: true,
         changeYear: true
     });
+
+    // Recipient sselect 2 plugin
+    $('#recipient').select2({
+        ajax: {
+            url: 'https://api.github.com/search/repositories',
+            dataType: 'json',
+            processResults: function (data) {
+                // Process the data received from the AJAX request here
+                // You need to format the data into Select2's expected format
+                // Typically, this involves creating an array of objects with 'id' and 'text' properties
+    
+                var formattedData = data.items.map(function(item) {
+                    return {
+                        id: item.id,
+                        text: item.name  // You can customize this based on your data structure
+                    };
+                });
+    
+                return {
+                    results: formattedData
+                };
+            },
+            cache: true
+            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+          }
+    });
 })

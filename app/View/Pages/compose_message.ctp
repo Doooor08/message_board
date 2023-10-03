@@ -3,7 +3,7 @@
         <div class="card-body d-flex justify-content-center align-items-center flex-column">
             <form>
                 <label for="recipient">Recipient</label>
-                <input type="text" name="recipient" id="recipient">
+                <select class="form-control w-100" name="recipient" id="recipient"></select>
                 <label for="message">Message</label>
                 <textarea name="message" id="message" cols="30" rows="10"></textarea>
                 <button>Submit</button>
