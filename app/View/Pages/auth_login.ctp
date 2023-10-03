@@ -1,5 +1,5 @@
 <div class="col-md-12">
-    <div class="card p-5 mx-auto" style="width:40%">
+    <div class="card p-3 mx-auto" style="width:30%">
         <div class="card-header border-0 bg-white">
             <h3 class="text-center">Login</h3>
         </div>
@@ -20,7 +20,7 @@
                     <button type="submit" class="btn btn-primary w-100 rounded-pill">Log in</button>
                 </div>
                 <div class="d-flex justify-content-center mt-5">
-                    <span>Don't have an account? <a href="<?php echo Router::url('/register');?>">Sign up</a></span>
+                    <span>Don't have an account? <a href="<?php echo Router::url('/register'); ?>">Sign up</a></span>
                 </div>
             </form>
         </div>

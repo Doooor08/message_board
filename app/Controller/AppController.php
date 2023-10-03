@@ -39,14 +39,15 @@ class AppController extends Controller {
             )
         ),
         'Session' => array(
-            'defaults' => 'php',
-            'cookie' => 'user_session',
-            'timeout' => 3600, // 1 hour
-            'cookieTimeout' => -1 // No expiry until user logs out or session destroyed
+            
         ),
     );
 
     public function beforeFilter() {
         $this->Auth->allow('authRegister', 'authLogin');
+        
+        parent::beforeFilter();
+        $user = $this->Session->read('User');
+        $this->set(compact('user'));
     }
 }

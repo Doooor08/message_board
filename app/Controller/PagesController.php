@@ -81,19 +81,59 @@ class PagesController extends AppController {
 	public function authRegister() {
 		$this->layout = 'authLayout';
 		$this->set('title', 'Register');
+		$this->Session->destroy();
 	}
+
 	public function authLogin() {
 		$this->layout = 'authLayout';
 		$this->set('title', 'Login');
+		$this->Session->destroy();
 	}
+
 	public function authSuccess() {
 		$this->layout = 'authLayout';
 		$this->set('title', 'Success');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
 	}
+
 	// Main page functions: sessions are required
 	public function index() {
 		$this->layout = 'indexLayout';
 		$this->set('title', 'Home');
+		$this->set('pageTitle', 'Message List');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
+	}
+
+	public function userProfile() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Profile');
+		$this->set('pageTitle', 'User Profile');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
+	}
+	public function userProfileEdit() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Edit Profile');
+		$this->set('pageTitle', 'Edit User Profile');
+		
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
+	}
+
+	public function composeMessage() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Compose New Message');
+		$this->set('pageTitle', 'New Message');
 		// Check session 
 		if (!$this->Session->check('User')) {
 			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));

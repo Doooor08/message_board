@@ -20,18 +20,4 @@ class UserData extends AppModel {
             'rule' => 'date',
         ),
     );
-
-    // Register
-    // public function beforeSave($options = array()) {
-    //     if (isset($this->data['User']['password'])) {
-    //         $passwordHash = new BlowfishPasswordHasher();
-    //         $this->data['User']['password'] = $passwordHash->hash(
-    //             $this->data['User']['password']
-    //         );
-    //     }
-    //     $this->data['User']['created_at'] = self::getDate();
-    //     $this->data['User']['user_id'] = self::GenerateUserID();
-    
-    //     return true;
-    // }
 }

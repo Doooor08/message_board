@@ -38,17 +38,18 @@ class User extends AppModel {
         )
     );
 
-    // Register
+    // Register: Hash password
+    // Then set user_id and created_at
     public function beforeSave($options = array()) {
-        if (isset($this->data['User']['password'])) {
+        if ($this->id === null && isset($this->data['User']['password'])) {
             $passwordHash = new BlowfishPasswordHasher();
             $this->data['User']['password'] = $passwordHash->hash(
                 $this->data['User']['password']
             );
+            $this->data['User']['user_id'] = self::GenerateUserID();
+            $this->data['User']['created_at'] = $this->getDate();
         }
-        $this->data['User']['created_at'] = $this->getDate();
-        $this->data['User']['user_id'] = self::GenerateUserID();
-    
+        
         return true;
     }
 
@@ -63,9 +64,12 @@ class User extends AppModel {
 
         return false; 
     }
+
     public function getDate() {
         return date('Y-m-d G:i:s');
     }
+
+    // Private classes
     private function GenerateUserID() {
         $min = 1000000000;
         $max = 9999999999;

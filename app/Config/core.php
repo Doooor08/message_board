@@ -227,7 +227,10 @@
  * the cake shell command: cake schema create Sessions
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+		'defaults' => 'php',
+		'cookie' => 'user_session',
+		'timeout' => 3600, // 1 hour
+		'cookieTimeout' => 2147483647 // No expiry until user logs out or session destroyed
 	));
 
 /**
@@ -286,7 +289,7 @@
  * then the value of `Config.timezone` will be used. This feature allows you to set users' timezone just
  * once instead of passing it each time in function calls.
  */
-	//Configure::write('Config.timezone', 'Europe/Paris');
+	// Configure::write('Config.timezone', 'Europe/Paris');
 
 /**
  * Cache Engine Configuration

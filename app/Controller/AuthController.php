@@ -14,16 +14,12 @@ class AuthController extends AppController {
             $this->User->set($data);
 
             if ($this->User->save($data)) {
-                self::setSession($data);
+                // Retrieve the saved user data
+                $getUser = $this->User->read();
+                $this->User->id = $getUser['User']['id'];
+                $this->User->saveField('last_login', $this->User->getDate());
                 
-                $userData = array(
-                    'user_id' => $this->User->field('user_id', array('pk_id' => $this->User->id)),
-                    'last_login' => $this->User->getDate(),
-                );
-
-                $this->loadModel('UserData');
-                $this->UserData->create();
-                $this->UserData->save($userData);
+                self::setSession($data);
 
                 http_response_code(201);
                 $response = array(
@@ -78,30 +74,21 @@ class AuthController extends AppController {
                 );
                 return json_encode($response);
             }
-    
-            $this->loadModel('UserData');
-            $lastLogin = $this->UserData->find('first', array('conditions' => array('user_id' => $findUser['User']['user_id'])));
-            if(!$lastLogin) {
-                $response = array(
-                    'message' => 'Not found',
-                );
-            }
-            // $lastLogin['UserData']['last_login'] = $this->User->getDate();
-            $this->UserData->id = $findUser['User']['id'];
-            $this->UserData->save(array(
-                'id' => $this->UserData->id,
-                'last_login' => $this->User->getDate(),
-            ));
 
-            // self::setSession($findUser);
+            $findUser['User']['last_login'] = $this->User->getDate();
+            $this->User->id = $findUser['User']['id'];
+            $this->User->save($findUser);
+
+            self::setSession($findUser);
+
             http_response_code(200);
             $response = array(
                 'status' => 200,
-                'message' => 'Login test passed!',
-                'data' => array(
-                    'user_id' => $findUser['User']['user_id'],
-                    'last_login' => $lastLogin['UserData']['last_login'],
-                )
+                'message' => 'Login success!',
+                // 'data' => array(
+                //     'user_id' => $findUser['User']['user_id'],
+                //     'session_time' => $findUser['User']['last_login'],
+                // )
             );
         }
         else {
@@ -121,8 +108,36 @@ class AuthController extends AppController {
     }
 
     private function setSession($data) {
-        $lastLogin = $this->User->update();
-        return $this->Session->write('User', $data);
+        $storeUserData = $this->User->find('first', array(
+            'fields' => array(
+                'User.name',
+                'User.user_id',
+                'User.email',
+                'User.password',
+                'User.created_at',
+                'User.last_login',
+                'UserData.photo',
+                'UserData.gender',
+                'UserData.birthdate',
+                'UserData.description',
+            ),
+            'conditions' => array(
+                'User.user_id' => $data['User']['user_id'],
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'tbl_users_data',
+                    'alias' => 'UserData',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'UserData.user_id = User.user_id',
+                    )
+                )
+            )
+        ));
+        $storeUserData = array_merge($storeUserData['User'], $storeUserData['UserData']);
+
+        return $this->Session->write('User', $storeUserData);
     }
 
 }

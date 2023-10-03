@@ -1,5 +1,5 @@
 <div class="col-md-12">
-    <div class="card p-5 mx-auto" style="width:40%">
+    <div class="card p-5 mx-auto" style="width:30%">
         <div class="card-header border-0 bg-white">
             <h3 class="text-center">Register</h3>
         </div>

@@ -1,9 +1,10 @@
 <div class="col-md-12 px-0">
     <div class="card border-0">
         <div class="card-header d-flex justify-content-end align-items-center bg-white">
-            <button type="button" id="new-message" class="btn btn-primary">
+            <!-- <button type="button" id="new-message" class="btn btn-primary">
                 New Message
-            </button>
+            </button> -->
+            <a href="<?php echo Router::url('/compose');?>" class="btn btn-primary">New Message</a>
         </div>
         <div class="card-body">
             <div class="d-flex flex-row mx-2 p-2">
