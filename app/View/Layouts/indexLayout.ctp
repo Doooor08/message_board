@@ -19,7 +19,7 @@
 	<?php echo $this->Html->script('lib/bootstrap.bundle.min'); ?>
 </head>
 <body>
-    <?php echo json_encode($user) ?>
+    <?php echo "Session: " . json_encode($user). "<br>" ?>
 	<div id="container" class="container">
         <div class="row my-2">
             <div id="header" class="col-md-12 p-3">
@@ -30,7 +30,7 @@
                         <button type="button" id="user-dropdown" class="btn btn-primary rounded-circle" data-toggle="dropdown">
                         <i class="bi bi-person-circle align-middle"></i></button>
                         <div class="dropdown-menu dropdown-menu-right mt-2">
-                            <a class="dropdown-item" href="<?php echo Router::url('/profile'); ?>">Profile</a>
+                            <a class="dropdown-item" href="<?php echo Router::url('/user/'. $user['user_id']); ?>">Profile</a>
                             <a class="dropdown-item" href="<?php echo Router::url('/logout'); ?>">Logout</a>
                         </div>
                     </div>

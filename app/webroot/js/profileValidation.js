@@ -13,7 +13,8 @@ $(document).ready(function() {
             contentType: false,
             processData: false,
             success: function(res) {
-                console.log(res)
+                console.log(res);
+                // window.location.reload();
             },
             error: function(res) {
                 console.log(res);

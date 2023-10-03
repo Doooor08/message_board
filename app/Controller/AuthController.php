@@ -85,10 +85,6 @@ class AuthController extends AppController {
             $response = array(
                 'status' => 200,
                 'message' => 'Login success!',
-                // 'data' => array(
-                //     'user_id' => $findUser['User']['user_id'],
-                //     'session_time' => $findUser['User']['last_login'],
-                // )
             );
         }
         else {
@@ -110,17 +106,10 @@ class AuthController extends AppController {
     private function setSession($data) {
         $storeUserData = $this->User->find('first', array(
             'fields' => array(
-                'User.id',
                 'User.user_id',
                 'User.name',
                 'User.email',
-                'User.password',
-                'User.created_at',
-                'User.last_login',
                 'UserData.photo',
-                'UserData.gender',
-                'UserData.birthdate',
-                'UserData.description',
             ),
             'conditions' => array(
                 'User.user_id' => $data['User']['user_id'],

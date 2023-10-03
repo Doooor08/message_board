@@ -39,9 +39,9 @@
 	Router::connect('/profile', array('controller' => 'pages', 'action' => 'userProfile'));
 	Router::connect('/profile/edit', array('controller' => 'pages', 'action' => 'userProfileEdit'));
 	Router::connect('/profile/update', array('controller' => 'user', 'action' => 'update'));
-	// Router::connect('/profile/:user', array('controller' => 'user', 'action' => 'get'));
 	Router::connect('/compose', array('controller' => 'pages', 'action' => 'composeMessage'));
-
+	
+	Router::connect('/user/:user', array('controller' => 'user', 'action' => 'get'));
 	Router::connect('/logout', array('controller' => 'auth', 'action' => 'logout'));
 /**
  * Load all plugin routes. See the CakePlugin documentation on

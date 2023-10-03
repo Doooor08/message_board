@@ -48,6 +48,7 @@ class AppController extends Controller {
         
         parent::beforeFilter();
         $user = $this->Session->read('User');
-        $this->set(compact('user'));
+        $userData = $this->Session->read('userData') ?? null;
+        $this->set(compact('user', 'userData'));
     }
 }

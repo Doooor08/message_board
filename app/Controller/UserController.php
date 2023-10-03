@@ -9,34 +9,19 @@ class UserController extends AppController {
         $this->autoRender = false;
         $userId = $this->request->params['user'];
         if ($this->request->is('get')) {
-            $getUserData = $this->User->find('first', array(
-                'fields' => array(
-                    'User.name',
-                    'User.user_id',
-                    'User.created_at',
-                    'User.last_login',
-                    'UserData.photo',
-                    'UserData.gender',
-                    'UserData.birthdate',
-                    'UserData.description',
-                ),
-                'conditions' => array(
-                    'User.user_id' => $userId,
-                ),
-                'joins' => array(
-                    array(
-                        'table' => 'tbl_users_data',
-                        'alias' => 'UserData',
-                        'type' => 'LEFT',
-                        'conditions' => array(
-                            'UserData.user_id = User.user_id',
-                        )
-                    )
-                )
-            ));
+            $getUserData = self::getUserData($userId);
             $getUserData = array_merge($getUserData['User'], $getUserData['UserData']);
-    
-            $this->Session->write('userData', $getUserData);
+
+            // Format gender and birthdate
+            if (isset($getUserData['gender'])) {
+                $getUserData['gender'] = self::formatGender($getUserData['gender']);
+            }
+            
+            if(isset($getUserData['birthdate'])) {
+                $getUserData['birthdate'] = self::formatBirthDate($getUserData['birthdate']);
+            }
+
+            self::setUserDataSession($getUserData);
             $this->redirect(array('controller' => 'pages', 'action' => 'userProfile',
             '?' => array(
                 'user_id' => $getUserData['user_id'],
@@ -50,8 +35,6 @@ class UserController extends AppController {
             $this->response->type('json');
             $this->response->body(json_encode($response));
         }
-
-        // echo json_encode(array($getUserData));
     }
 
     public function update() {
@@ -101,23 +84,20 @@ class UserController extends AppController {
             }
             $filename = $upload['filename'];
 
-            $this->User->id = $this->Session->read('User.id');
-
             $updateUser = $this->User->updateAll(
                 array(
                     'User.name' => "'". $name. "'",
                     'User.updated_at' => "'". $this->User->getDate(). "'",
                 ),
-                array('User.id' => $this->Session->read('User.id'))
+                array('User.user_id' => $this->Session->read('User.user_id'))
             );
-
-            $this->UserData->id = $this->Session->read('User.id');
             
-            $updateUserData = $this->UserData->updateAll(array(
-                'UserData.photo' => "'" . $filename . "'",
-                'UserData.gender' => "'" . $gender . "'",
-                'UserData.birthdate' => "'" . $birthdate . "'",
-                'UserData.description' => "'" . $description . "'",
+            $updateUserData = $this->UserData->updateAll(
+                array(
+                    'UserData.photo' => "'" . $filename . "'",
+                    'UserData.gender' => "'" . $gender . "'",
+                    'UserData.birthdate' => "'" . $birthdate . "'",
+                    'UserData.description' => "'" . $description . "'",
                 ),
                 array(
                     'UserData.user_id' => $this->Session->read('User.user_id')
@@ -132,12 +112,19 @@ class UserController extends AppController {
                 return json_encode($response); 
             }
 
+            $getUserData = self::getUserData($this->Session->read('User.user_id'));
+            $getUserData = array_merge($getUserData['User'], $getUserData['UserData']);
+            $getUserData['gender'] = self::formatGender($getUserData['gender']);
+            $getUserData['birthdate'] = self::formatBirthDate($getUserData['birthdate']);
+            
+            self::setUserDataSession($getUserData);
+
             http_response_code(200);
-                $response = array(
-                    'status' => 200,
-                    'message' => 'User Profile updated!',
-                );
-                return json_encode($response); 
+            $response = array(
+                'status' => 200,
+                'message' => 'User Profile updated!',
+            );
+            return json_encode($response); 
         } else {
             http_response_code(405);
             $response = array(
@@ -164,6 +151,48 @@ class UserController extends AppController {
 
         return false;
 
+    }
+
+    
+    private function getUserData($id) {
+        return $this->User->find('first', array(
+            'fields' => array(
+                'User.user_id',
+                'User.name',
+                'User.created_at',
+                'User.last_login',
+                'UserData.photo',
+                'UserData.gender',
+                'UserData.birthdate',
+                'UserData.description',
+            ),
+            'conditions' => array(
+                'User.user_id' => $id,
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'tbl_users_data',
+                    'alias' => 'UserData',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'UserData.user_id = User.user_id',
+                    )
+                )
+            )
+        ));
+    }
+    
+    private function setUserDataSession($data) {
+        return $this->Session->write('userData', $data);
+    }
+
+    private function formatBirthDate($birthdate) {
+        $dateTime = DateTime::createFromFormat('Y-m-d', $birthdate);
+        return $dateTime->format('m/d/Y');
+    }
+
+    private function formatGender($gender) {
+        return ($gender === 'M') ? 'Male' : (($gender === 'F') ? 'Female' : null);
     }
 }
 ?>
