@@ -35,29 +35,47 @@ $(document).ready(function() {
         changeYear: true
     });
 
-    // Recipient sselect 2 plugin
+    // Recipient select 2 plugin
     $('#recipient').select2({
         ajax: {
-            url: 'https://api.github.com/search/repositories',
+            url: `${BASE_URL}user/all`,
             dataType: 'json',
-            processResults: function (data) {
-                // Process the data received from the AJAX request here
-                // You need to format the data into Select2's expected format
-                // Typically, this involves creating an array of objects with 'id' and 'text' properties
-    
-                var formattedData = data.items.map(function(item) {
+            processResults: function (item) {
+                // console.log(item.data)
+                var imgsrc = `${BASE_URL}img/avatars/`;
+                item.data.forEach(el => {
+                    if(el.photo != null) {
+                        el.photo = imgsrc + el.photo;
+                    } else {
+                        el.photo = `${imgsrc}profile_default.png`
+                    }
+                });
+                var formattedData = item.data.map(function(el) {
                     return {
-                        id: item.id,
-                        text: item.name  // You can customize this based on your data structure
+                        id: el.user_id,
+                        text: el.name,
+                        photo: el.photo,
                     };
                 });
+                console.log(formattedData);
+
     
                 return {
                     results: formattedData
                 };
             },
-            cache: true
-            // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
-          }
+            cache: true,
+        },
+        templateResult: formatDisplay,
     });
-})
+
+    function formatDisplay (user) {
+        var $format = $(
+            '<div class="user-option">' +
+            '<img src="' + user.photo + '" class="img-fluid mr-2" width="40"/>' +
+            '<span class="user-name">' + user.text + '</span>' +
+            '</div>'
+        );
+        return $format;
+    };    
+});

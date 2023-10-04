@@ -26,21 +26,23 @@
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
 	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
-/**
- * ...and connect the rest of 'Pages' controller's URLs.
- */
+
 	Router::connect('/register', array('controller' => 'pages', 'action' => 'authRegister'));
 	Router::connect('/register/store', array('controller' => 'auth', 'action' => 'register'));
 	Router::connect('/login', array('controller' => 'pages', 'action' => 'authLogin'));
 	Router::connect('/login/validate', array('controller' => 'auth', 'action' => 'login'));
 	Router::connect('/success', array('controller' => 'pages', 'action' => 'authSuccess'));
 	
-	Router::connect('/home', array('controller' => 'pages', 'action' => 'index'));
+	Router::connect('/home', array('controller' => 'pages', 'action' => 'index')); 
 	Router::connect('/profile', array('controller' => 'pages', 'action' => 'userProfile'));
 	Router::connect('/profile/edit', array('controller' => 'pages', 'action' => 'userProfileEdit'));
 	Router::connect('/profile/update', array('controller' => 'user', 'action' => 'update'));
 	Router::connect('/compose', array('controller' => 'pages', 'action' => 'composeMessage'));
 	
+	Router::connect('/message/all', array('controller' => 'message', 'action' => 'index'));
+	Router::connect('/message/store', array('controller' => 'message', 'action' => 'store'));
+
+	Router::connect('/user/all', array('controller' => 'user', 'action' => 'index'));
 	Router::connect('/user/:user', array('controller' => 'user', 'action' => 'get'));
 	Router::connect('/logout', array('controller' => 'auth', 'action' => 'logout'));
 /**

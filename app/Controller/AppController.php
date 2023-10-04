@@ -41,6 +41,7 @@ class AppController extends Controller {
         'Session' => array(
             
         ),
+        'Paginator',
     );
 
     public function beforeFilter() {

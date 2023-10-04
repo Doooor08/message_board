@@ -4,6 +4,38 @@ App::uses('AppController', 'Controller');
 
 class UserController extends AppController {
     public $uses = array('User','UserData');
+    
+    public function index() {
+        $this->autoRender = false;
+        if ($this->request->is('get')) {
+            $getAll = self::getAllUsers();
+    
+            $modifiedResults = array();
+    
+            foreach ($getAll as $result) {
+                $modifiedResult = array(
+                    'user_id' => $result['User']['user_id'],
+                    'name' => $result['User']['name'],
+                    'photo' => $result['UserData']['photo'],
+                );
+                $modifiedResults[] = $modifiedResult;
+            }
+    
+            http_response_code(200);
+            $response = array(
+                'status' => 200,
+                'data' => $modifiedResults,
+            );
+        } else {
+            http_response_code(405);
+            $response = array(
+                'status' => 405,
+                'message' => 'Method not Allowed',
+            );
+        }
+        $this->response->type('json');
+        return $this->response->body(json_encode($response));
+    }
 
     public function get() {
         $this->autoRender = false;
@@ -36,6 +68,7 @@ class UserController extends AppController {
             $this->response->body(json_encode($response));
         }
     }
+
 
     public function update() {
         $this->autoRender = false;
@@ -179,6 +212,29 @@ class UserController extends AppController {
                     )
                 )
             )
+        ));
+    }
+
+    private function getAllUsers() {
+        return $this->User->find('all', array(
+            'fields' => array(
+                'User.user_id',
+                'User.name',
+                'UserData.photo',
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'tbl_users_data',
+                    'alias' => 'UserData',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'User.user_id = UserData.user_id',
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'NOT' => array('User.user_id' => $this->Session->read('User.user_id')),
+            ),
         ));
     }
     
