@@ -11,13 +11,14 @@
                         accept="image/png, image/jpeg, image/gif" 
                         required
                     >
-                    <?php echo $this->Html->image('avatars/'.$userData['photo'] ?? 'avatars/profile_default.png', 
-                                                array(
-                                                    'fullBase' => true, 
-                                                    'alt' => 'Img', 
-                                                    'id' => 'imagePreview',
-                                                    'class' => 'img-fluid',
-                                                    'width' => '40%')); ?>
+                    <?php $img = $userData['photo'] ?? 'profile_default.png'; ?>
+                    <?php echo $this->Html->image('avatars/'.$img, 
+                                            array(
+                                                'fullBase' => true, 
+                                                'alt' => 'Img', 
+                                                'id' => 'imagePreview',
+                                                'class' => 'img-fluid',
+                                                'width' => '40%')); ?>
                     <div class="d-flex flex-column mx-auto">
                         <button type="button" class="btn bg-light" id="profileUpload">Upload Pic</button>
                     </div>

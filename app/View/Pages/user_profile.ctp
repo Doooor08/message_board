@@ -3,7 +3,8 @@
     <div class="card p-5 mx-auto border-0 w-50" id="profile-card">
         <div class="card-body">
             <div class="d-flex justify-content-between flex-row">
-                <?php echo $this->Html->image('avatars/'.$userData['photo'] ?? 'avatars/profile_default.png', 
+                <?php $img = $userData['photo'] ?? 'profile_default.png'; ?>
+                <?php echo $this->Html->image('avatars/'.$img, 
                                             array(
                                                 'fullBase' => true, 
                                                 'alt' => 'Img', 

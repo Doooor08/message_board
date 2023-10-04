@@ -3,43 +3,50 @@ header('Content_type: application/json');
 App::uses('AppController', 'Controller');
 
 class MessageController extends AppController {
-    public $components = array('Paginator');
-    public $uses = array('Message'); 
+    public $uses = array('User','UserData','Message'); 
 
     public function index() {
         $this->autoRender = false;
-        
-        $this->Paginator->settings = array(
-            'conditions' => array(
-                'Message.deleted_at' => null,
-            ),
-            'limit' => 10, // Number of records per page
-            'order' => array('Message.created_at' => 'desc'), // Sorting order
-        );
 
         if ($this->request->is('get')) {
-            $data = $this->Message->find('all', array(
+            $getMsgData = $this->Message->find('all', array(
+                'fields' => array(
+                    'User.user_id',
+                    'User.name',
+                    'UserData.photo',
+                    'Message.message_id',
+                    'Message.recipient',
+                    'Message.message_body',
+                    'Message.created_at',
+                ),
                 'conditions' => array(
                     'Message.deleted_at' => null,
+                    'Message.recipient' => $this->Session->read('User.user_id')
+                ),
+                'contain' => array(
+                    'User', // Include the User model
+                    'UserData', // Include the UserData model
                 ),
             ));
+            
+            $data = array();
 
-            $formattedData = array();
-
-            foreach ($data as $message) {
-                $formattedData[] = [
-                    'message_id' => $message['Message']['message_id'],
-                    'user_id' => $message['Message']['user_id'],
-                    'recipient' => $message['Message']['recipient'],
-                    'message_body' => $message['Message']['message_body'],
-                    'created_at' => $message['Message']['created_at'],
-                ];
+            foreach ($getMsgData as $res) {
+                $data[] = array(
+                    'user_id' => $res['User']['user_id'],
+                    'name' => $res['User']['name'],
+                    'photo' => $res['UserData']['photo'],
+                    'message_id' => $res['Message']['message_id'],
+                    'recipient' => $res['Message']['recipient'],
+                    'message_body' => $res['Message']['message_body'],
+                    'created_at' => $res['Message']['created_at'],
+                );
+                
             }
-
-            $formattedData = $this->Paginator->paginate('Message');
-
+            http_response_code(200);
             $response = array(
-                'data' => $formattedData,
+                'message' => 'Data fetched',
+                'data' => $getMsgData
             );
 
         } else {
@@ -49,6 +56,7 @@ class MessageController extends AppController {
                 'message' => 'Method not Allowed',
             );
         }
+        debug($this->Message->getDataSource()->getLog(false, false));
         $this->response->type('json');
         $this->response->body(json_encode($response));
     }

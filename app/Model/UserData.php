@@ -3,7 +3,13 @@ App::uses('AppModel', 'Model');
 
 class UserData extends AppModel {
     public $useTable = 'tbl_users_data';
-
+    public $belongsTo = array(
+        'User' => array(
+            'className' => 'User',
+            'foreignKey' => 'user_id',
+        ),
+    );
+    
     public $validate = array(
         'photo' => array(
             'rule' => array('fileSize', '<=', '5MB'), // Max file size: 5MB

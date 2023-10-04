@@ -33,7 +33,7 @@
 	Router::connect('/login/validate', array('controller' => 'auth', 'action' => 'login'));
 	Router::connect('/success', array('controller' => 'pages', 'action' => 'authSuccess'));
 	
-	Router::connect('/home', array('controller' => 'pages', 'action' => 'index')); 
+	Router::connect('/home', array('controller' => 'pages', 'action' => 'index'));
 	Router::connect('/profile', array('controller' => 'pages', 'action' => 'userProfile'));
 	Router::connect('/profile/edit', array('controller' => 'pages', 'action' => 'userProfileEdit'));
 	Router::connect('/profile/update', array('controller' => 'user', 'action' => 'update'));

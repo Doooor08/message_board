@@ -3,6 +3,18 @@ App::uses('AppModel', 'Model');
 
 class Message extends AppModel {
     public $useTable = 'tbl_messages';
+    public $belongsTo = array(
+        'User' => array(
+            'className' => 'User',
+            'foreignKey' => 'user_id',
+        ),
+        'UserData' => array(
+            'className' => 'UserData',
+            'foreignKey' => false,
+            'conditions' => array('UserData.user_id = Message.user_id')
+        )
+    );
+    
 
     // Set message_id and created_at values
     public function beforeSave($options = array()) {

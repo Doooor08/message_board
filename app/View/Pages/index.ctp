@@ -3,8 +3,7 @@
         <div class="card-header d-flex justify-content-end align-items-center bg-white">
             <a href="<?php echo Router::url('/compose');?>" class="btn btn-primary">New Message</a>
         </div>
-        <div class="card-body">
-        
+        <div class="card-body" id="message-container">
             <div class="d-flex flex-row border-bottom border-dark message-head">
                 <div class="user-icon p-2">
                 <?php echo $this->Html->image('avatars/profile_default.png', 
@@ -19,10 +18,11 @@
                     <p class="mb-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
                              Sit molestias numquam corporis quidem repellat recusandae reprehenderit sint aspernatur ex inventore eos 
                              soluta odio repellendus, dolores nostrum vero, consequatur quaerat obcaecati.</p>
-                    <span class="align-self-end">Date</span>
+                    <div class="d-flex justify-content-end mx-2 my-1">
+                        <span class="align-self-end">Date</span>
+                    </div>
                 </div>
             </div>
-            <?php echo $this->Paginator->next('Next »'); ?>
         </div>
         <div class="card-footer"></div>
     </div>
