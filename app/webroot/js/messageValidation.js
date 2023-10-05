@@ -4,16 +4,15 @@ $(document).ready(function() {
             type: 'GET',
             url: `${BASE_URL}message/all`,
             success: function(res) {
-                console.log(res)
-                // If User has no messages received
-                console.log(res.data.length)
+                // console.log(res)
+                // console.log(res.data.length)
                 
+                // If User has no messages received
                 if(res.data.length == 0) {
                     return appendNoMessage();
                 }
                 var imgsrc = `${BASE_URL}img/avatars/`;
                 res.data.forEach(el => {
-                    console.log(el);
                     if(el.photo != null) {
                         el.photo = imgsrc + el.photo;
                     } else {
@@ -47,10 +46,26 @@ $(document).ready(function() {
             },
         })
     });
+    // If message .message-head clicks, redirect to message details
+    $(document).on('click', '.message-head', function() {
+        var getID = $(this).data('id');
+        console.log(`${BASE_URL}message/view/${getID}`)
+        $.ajax({
+            type: 'GET',
+            url: `${BASE_URL}message/view/${getID}`,
+            success: function(res) {
+                console.log(res);
+            },
+            error: function(res) {
+                console.log(res);
+            },
+        })
+    })
+
     // Create message-body dynamic
     function appendMessage(message) {
-        
-        var $messageContainer = $("<div>").addClass("d-flex flex-row border-bottom border-dark message-head");
+        var $messageItem = $("<li>").addClass("message-head").attr("data-id", message.message_id);
+        var $messageContainer = $("<div>").addClass("d-flex flex-row border-bottom border-dark");
         var $imageContainer = $("<div>").addClass("user-icon p-2");
         var $image = $("<img>").attr({
             src: message.photo,
@@ -69,8 +84,9 @@ $(document).ready(function() {
         $imageContainer.append($image);
         $messageContent.append($userName, $messageBody, $dateContainer);
         $messageContainer.append($imageContainer, $messageContent);
+        $messageItem.append($messageContainer);
     
-        $("#message-container").append($messageContainer);
+        $("#message-container").append($messageItem);
     }
 
     function appendNoMessage() {

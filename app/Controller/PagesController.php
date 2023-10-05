@@ -130,7 +130,17 @@ class PagesController extends AppController {
 		}
 	}
 
-	public function composeMessage() {
+	public function messageCompose() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Compose New Message');
+		$this->set('pageTitle', 'New Message');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
+	}
+
+	public function messageDetails() {
 		$this->layout = 'indexLayout';
 		$this->set('title', 'Compose New Message');
 		$this->set('pageTitle', 'New Message');

@@ -8,3 +8,11 @@ body {
 button#logout {
     font-size: 18px;
 }
+li.message-head {
+    text-decoration: none;
+    list-style: none;
+    cursor: pointer;
+}
+li.message-head:hover {
+    background-color: rgba(222, 222, 222, 0.452);
+}

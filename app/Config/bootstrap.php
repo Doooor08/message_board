@@ -23,7 +23,13 @@
  */
 
 // Setup a 'default' cache configuration for use in the application.
-Cache::config('default', array('engine' => 'File'));
+// Cache::config('default', array('engine' => 'File'));
+Cache::config('short', array(
+    'engine' => 'MemcachedEngine',
+    'duration' => '+1 hours',
+    'path' => CACHE,
+    'prefix' => 'cake_short_'
+));
 
 /**
  * The settings below can be used to set additional paths to models, views and controllers.

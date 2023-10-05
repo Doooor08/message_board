@@ -3,27 +3,29 @@
         <div class="card-header d-flex justify-content-end align-items-center bg-white">
             <a href="<?php echo Router::url('/compose');?>" class="btn btn-primary">New Message</a>
         </div>
-        <div class="card-body mh-100" id="message-container">
-            <!-- messageValidation.js appends content here -->
-            <!-- <div class="d-flex flex-row border-bottom border-dark message-head">
-                <div class="user-icon p-2">
-                <?php echo $this->Html->image('avatars/profile_default.png', 
+        <div class="card-body mh-100">
+            <ul class="mb-0 p-0" id="message-container">
+                <!-- messageValidation.js appends content here -->
+                <!-- <li class="message-head">
+                    <div class="d-flex flex-row border-bottom border-dark">
+                        <div class="user-icon p-2">
+                        <?php echo $this->Html->image('avatars/profile_default.png', 
                                 array(
                                     'fullBase' => true, 
                                     'alt' => 'Img', 
                                     'class' => 'img-fluid',
                                     'width' => '120')); ?>
-                </div>
-                <div class="d-flex justify-content-start flex-column mx-2">
-                    <h5 class="h5">User Name</h5>
-                    <p class="mb-1">Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                             Sit molestias numquam corporis quidem repellat recusandae reprehenderit sint aspernatur ex inventore eos 
-                             soluta odio repellendus, dolores nostrum vero, consequatur quaerat obcaecati.</p>
-                    <div class="d-flex justify-content-end mx-2 my-1">
-                        <span class="align-self-end">Date</span>
+                        </div>
+                        <div class="d-flex justify-content-start flex-column mx-2 my-auto flex-fill">
+                            <h5 class="h5">Not Joey</h5>
+                            <p class="mb-1">Hello Admin!</p>
+                            <div class="d-flex justify-content-end align-self-stretch mx-2 my-1">
+                                <span class="align-self-end">2023-10-05 11:47:43</span>
+                            </div>
+                        </div>
                     </div>
-                </div> 
-            </div>-->
+                </li> -->
+            </ul>
         </div>
         <div class="card-footer"></div>
     </div>
