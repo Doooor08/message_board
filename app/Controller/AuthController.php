@@ -67,6 +67,7 @@ class AuthController extends AppController {
             }
 
             $user = $this->User->verifyPassword($password, $findUser['User']['password']);
+            debug($user);
             if(!$user) {
                 http_response_code(404);
                 $response = array(

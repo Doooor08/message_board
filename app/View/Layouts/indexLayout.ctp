@@ -21,7 +21,7 @@
 	<?php echo $this->Html->script('lib/bootstrap.bundle.min'); ?>
 </head>
 <body>
-    <?php echo "Session: " . json_encode($user). "<br>" ?>
+    <!-- <?php echo "Session: " . json_encode($user). "<br>" ?> -->
 	<div id="container" class="container">
         <div class="row my-2">
             <div id="header" class="col-md-12 p-3">

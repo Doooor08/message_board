@@ -140,13 +140,13 @@ class PagesController extends AppController {
 		}
 	}
 
-	public function messageDetails() {
-		$this->layout = 'indexLayout';
-		$this->set('title', 'Compose New Message');
-		$this->set('pageTitle', 'New Message');
-		// Check session 
-		if (!$this->Session->check('User')) {
-			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
-		}
-	}
+	// public function messageDetail() {
+	// 	$this->layout = 'indexLayout';
+	// 	$this->set('title', 'Message Body');
+	// 	$this->set('pageTitle', 'Message Details');
+	// 	// Check session 
+	// 	if (!$this->Session->check('User')) {
+	// 		$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+	// 	}
+	// }
 }

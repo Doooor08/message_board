@@ -1,6 +1,7 @@
 <?php 
 header('Content_type: application/json');
 App::uses('AppController', 'Controller');
+App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
 class UserController extends AppController {
     public $uses = array('User','UserData');
@@ -80,6 +81,9 @@ class UserController extends AppController {
             $gender = $this->request->data['gender'] ?? null;
             $gender = ($gender === 'male') ? 'M' : (($gender === 'female') ? 'F' : null);           
             $description = $this->request->data['description'];
+            $email = $this->request->data['email'];
+            $password = $this->request->data['pass'];
+
             $file = $this->request->form['photo'];
             
             // Check if file exists
@@ -116,10 +120,12 @@ class UserController extends AppController {
                 return json_encode($response);
             }
             $filename = $upload['filename'];
-
+            $reHash = new BlowfishPasswordHasher();
             $updateUser = $this->User->updateAll(
                 array(
                     'User.name' => "'". $name. "'",
+                    'User.email' => "'". $email. "'",
+                    'User.password' => "'". $reHash->hash($password). "'",
                     'User.updated_at' => "'". $this->User->getDate(). "'",
                 ),
                 array('User.user_id' => $this->Session->read('User.user_id'))
@@ -192,6 +198,7 @@ class UserController extends AppController {
             'fields' => array(
                 'User.user_id',
                 'User.name',
+                'User.email',
                 'User.created_at',
                 'User.last_login',
                 'UserData.photo',

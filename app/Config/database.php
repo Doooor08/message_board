@@ -71,7 +71,7 @@ class DATABASE_CONFIG {
 		'persistent' => false,
 		'host' => 'localhost',
 		'login' => 'Kerlwin',
-		'password' => 'Kerlwin',
+		'password' => 'password',
 		'database' => 'db_msg_board',
 		'prefix' => '',
 		'encoding' => 'utf8',

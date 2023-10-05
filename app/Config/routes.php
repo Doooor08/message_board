@@ -42,6 +42,8 @@
 	Router::connect('/message/all', array('controller' => 'message', 'action' => 'index'));
 	Router::connect('/message/view/:id', array('controller' => 'message', 'action' => 'get'));
 	Router::connect('/message/store', array('controller' => 'message', 'action' => 'store'));
+	Router::connect('/message/delete/:id', array());
+	Router::connect('/message/deleteAll/:id', array());
 
 	Router::connect('/user/all', array('controller' => 'user', 'action' => 'index'));
 	Router::connect('/user/:user', array('controller' => 'user', 'action' => 'get'));

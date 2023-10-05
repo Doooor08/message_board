@@ -49,12 +49,16 @@ class User extends AppModel {
     // Then set user_id and created_at
     public function beforeSave($options = array()) {
         if($this->id === null && isset($this->data['User']['password'])) {
+            
+            $this->data['User']['user_id'] = self::GenerateUserID();
+            $this->data['User']['created_at'] = $this->getDate();
+        }
+        // For updating passwords in profile
+        if(!empty($this->data['User']['password'])) {
             $passwordHash = new BlowfishPasswordHasher();
             $this->data['User']['password'] = $passwordHash->hash(
                 $this->data['User']['password']
             );
-            $this->data['User']['user_id'] = self::GenerateUserID();
-            $this->data['User']['created_at'] = $this->getDate();
         }
         
         return true;

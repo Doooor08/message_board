@@ -2,6 +2,7 @@
 header('Content_type: application/json');
 App::uses('AppController', 'Controller');
 
+
 class MessageController extends AppController {
     // public $uses = array('User','UserData','Message');
     public $uses = array('Message'); 
@@ -47,6 +48,7 @@ class MessageController extends AppController {
                 'message' => 'Method not Allowed',
             );
         }
+        
         // debug($this->Message->getDataSource()->getLog(false, false));
         $this->response->type('json');
         $this->response->body(json_encode($response));
@@ -61,22 +63,16 @@ class MessageController extends AppController {
                     FROM tbl_messages  
                     LEFT JOIN tbl_users ON (tbl_messages.user_id = tbl_users.user_id) 
                     LEFT JOIN tbl_users_data ON (tbl_users_data.user_id = tbl_users.user_id) 
-                    WHERE tbl_messages.deleted_at IS NULL AND tbl_messages.recipient = :recipient';
+                    WHERE tbl_messages.deleted_at IS NULL AND tbl_messages.message_id = :id';
 
             $params = array(
-                ':recipient' => $this->Session->read('User.user_id'),
+                ':id' => $id,
             );
 
-            $results = $this->Message->query($sql, $params);
-            
-            // Create Temporary table 
-            // Won't destroy until user logs out
-
-            $createTmpTable = 
-
+            $getMessage = $this->Message->query($sql, $params);
             $data = array();
-
-            foreach ($results as $res) {
+            
+            foreach ($getMessage as $res) {
                 $data[] = array(
                     'user_id' => $res['tbl_users']['user_id'],
                     'name' => $res['tbl_users']['name'],
@@ -89,13 +85,12 @@ class MessageController extends AppController {
                     'deleted_at' => $res['tbl_messages']['deleted_at'],
                 );
             }
-
+            
             http_response_code(200);
             $response = array(
                 'message' => 'Data fetched',
                 'data' => $data
             );
-
         } else {
             http_response_code(405);
             $response = array(
@@ -104,11 +99,7 @@ class MessageController extends AppController {
             );
         }
         $this->response->type('json');
-        $this->response->body(json_encode($response));
-        // $this->redirect(array('controller' => 'pages', 'action' => 'userProfile',
-        //     '?' => array(
-        //         'user_id' => $getUserData['user_id'],
-        //     )));
+        return $this->response->body(json_encode($response));
     }
     
 

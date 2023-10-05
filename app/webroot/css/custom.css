@@ -16,3 +16,7 @@ li.message-head {
 li.message-head:hover {
     background-color: rgba(222, 222, 222, 0.452);
 }
+a.message-link {
+    color: var(--dark);
+    text-decoration: none !important; 
+}

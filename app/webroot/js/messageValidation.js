@@ -4,7 +4,7 @@ $(document).ready(function() {
             type: 'GET',
             url: `${BASE_URL}message/all`,
             success: function(res) {
-                // console.log(res)
+                console.log(res)
                 // console.log(res.data.length)
                 
                 // If User has no messages received
@@ -18,7 +18,7 @@ $(document).ready(function() {
                     } else {
                         el.photo = `${imgsrc}profile_default.png`
                     }
-                    appendMessage(el);
+                    appendConvo(el);
                 });
             },
             error: function(res) {
@@ -49,12 +49,20 @@ $(document).ready(function() {
     // If message .message-head clicks, redirect to message details
     $(document).on('click', '.message-head', function() {
         var getID = $(this).data('id');
-        console.log(`${BASE_URL}message/view/${getID}`)
         $.ajax({
             type: 'GET',
             url: `${BASE_URL}message/view/${getID}`,
             success: function(res) {
-                console.log(res);
+                console.log(res.data);
+                var imgsrc = `${BASE_URL}img/avatars/`;
+                res.data.forEach(el => {
+                    if(el.photo != null) {
+                        el.photo = imgsrc + el.photo;
+                    } else {
+                        el.photo = `${imgsrc}profile_default.png`
+                    }
+                    appendMessage(el);
+                });
             },
             error: function(res) {
                 console.log(res);
@@ -63,22 +71,48 @@ $(document).ready(function() {
     })
 
     // Create message-body dynamic
-    function appendMessage(message) {
-        var $messageItem = $("<li>").addClass("message-head").attr("data-id", message.message_id);
-        var $messageContainer = $("<div>").addClass("d-flex flex-row border-bottom border-dark");
+    function appendConvo(message) {
+        var $messageItem = $("<li>").addClass("message-head mb-2").attr("data-id", message.message_id);
+        var $messageContainer = $("<div>").addClass("d-flex flex-row bg-light rounded-lg message-link");
         var $imageContainer = $("<div>").addClass("user-icon p-2");
         var $image = $("<img>").attr({
             src: message.photo,
             alt: "Img",
-            class: "img-fluid",
-            width: 100
+            class: "img-fluid rounded-circle border",
+            width: 70
         });
     
-        var $messageContent = $("<div>").addClass("d-flex justify-content-start flex-column mx-2 my-auto flex-fill");
+        var $messageContent = $("<div>").addClass("d-flex justify-content-start flex-column mx-2 flex-fill");
         var $userName = $("<h5>").addClass("h5").text(message.name); // Username h5
         var $messageBody = $("<p>").addClass("mb-1").text(message.message_body); // Message text
         var $dateContainer = $("<div>").addClass("d-flex justify-content-end align-self-stretch mx-2 my-1");
-        var $date = $("<span>").addClass("align-self-end").text(message.created_at); // Date
+        var $date = $("<span>").addClass("align-self-end mr-3 small").text(message.created_at); // Date
+
+        $dateContainer.append($date);
+        $imageContainer.append($image);
+        $messageContent.append($userName, $messageBody, $dateContainer);
+        $messageContainer.append($imageContainer, $messageContent);
+        $messageItem.append($messageContainer);
+    
+        $("#convo-container").append($messageItem);
+    }
+
+    function appendMessage(message) {
+        var $messageItem = $("<li>").addClass("message-head").attr("data-id", message.message_id);
+        var $messageContainer = $("<div>").addClass("d-flex flex-row bg-light rounded-lg message-link");
+        var $imageContainer = $("<div>").addClass("user-icon p-2");
+        var $image = $("<img>").attr({
+            src: message.photo,
+            alt: "Img",
+            class: "img-fluid rounded-circle border",
+            width: 70
+        });
+    
+        var $messageContent = $("<div>").addClass("d-flex justify-content-start flex-column mx-2 flex-fill");
+        var $userName = $("<h5>").addClass("h5").text(message.name); // Username h5
+        var $messageBody = $("<p>").addClass("mb-1").text(message.message_body); // Message text
+        var $dateContainer = $("<div>").addClass("d-flex justify-content-end align-self-stretch mx-2 my-1");
+        var $date = $("<span>").addClass("align-self-end mr-3 small").text(message.created_at); // Date
 
         $dateContainer.append($date);
         $imageContainer.append($image);
