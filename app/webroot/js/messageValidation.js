@@ -4,7 +4,13 @@ $(document).ready(function() {
             type: 'GET',
             url: `${BASE_URL}message/all`,
             success: function(res) {
-                console.log(res.data)
+                console.log(res)
+                // If User has no messages received
+                console.log(res.data.length)
+                
+                if(res.data.length == 0) {
+                    return appendNoMessage();
+                }
                 var imgsrc = `${BASE_URL}img/avatars/`;
                 res.data.forEach(el => {
                     console.log(el);
@@ -41,8 +47,6 @@ $(document).ready(function() {
             },
         })
     });
-    getAllMessages();
-
     // Create message-body dynamic
     function appendMessage(message) {
         
@@ -52,13 +56,13 @@ $(document).ready(function() {
             src: message.photo,
             alt: "Img",
             class: "img-fluid",
-            width: 120
+            width: 100
         });
     
-        var $messageContent = $("<div>").addClass("d-flex justify-content-start flex-column mx-2");
+        var $messageContent = $("<div>").addClass("d-flex justify-content-start flex-column mx-2 my-auto flex-fill");
         var $userName = $("<h5>").addClass("h5").text(message.name); // Username h5
         var $messageBody = $("<p>").addClass("mb-1").text(message.message_body); // Message text
-        var $dateContainer = $("<div>").addClass("d-flex justify-content-end mx-2 my-1");
+        var $dateContainer = $("<div>").addClass("d-flex justify-content-end align-self-stretch mx-2 my-1");
         var $date = $("<span>").addClass("align-self-end").text(message.created_at); // Date
 
         $dateContainer.append($date);
@@ -68,4 +72,15 @@ $(document).ready(function() {
     
         $("#message-container").append($messageContainer);
     }
+
+    function appendNoMessage() {
+        var $messageContainer = $("<div>").addClass("d-flex justify-content-center");
+        var $messageContent = $("<h5>").addClass("h5 my-3").text("You have no messages");
+
+        $messageContainer.append($messageContent);
+    
+        $("#message-container").append($messageContainer);
+    }
+
+    getAllMessages();
 });

@@ -4,7 +4,7 @@ App::uses('AppController', 'Controller');
 
 class AuthController extends AppController {
     public $components = array('Session');
-    public $uses = array('User');
+    public $uses = array('User','UserData');
     
     public function register() {
         $this->autoRender = false;
@@ -19,7 +19,8 @@ class AuthController extends AppController {
                 $this->User->id = $getUser['User']['id'];
                 $this->User->saveField('last_login', $this->User->getDate());
                 
-                self::setSession($data);
+                $this->UserData->saveField('user_id', $getUser['User']['user_id']);
+                self::setSession($getUser);
 
                 http_response_code(201);
                 $response = array(

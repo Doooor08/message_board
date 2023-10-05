@@ -8,6 +8,7 @@ class User extends AppModel {
         'Message' => array(
             'className' => 'Message',
             'foreignKey' => 'user_id',
+            
         ),
     );
     

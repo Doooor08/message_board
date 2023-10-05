@@ -1,10 +1,11 @@
 <div class="col-md-12 px-0">
-    <div class="card border-0">
+    <div class="card border-0" style="height: 80vh;">
         <div class="card-header d-flex justify-content-end align-items-center bg-white">
             <a href="<?php echo Router::url('/compose');?>" class="btn btn-primary">New Message</a>
         </div>
-        <div class="card-body" id="message-container">
-            <div class="d-flex flex-row border-bottom border-dark message-head">
+        <div class="card-body mh-100" id="message-container">
+            <!-- messageValidation.js appends content here -->
+            <!-- <div class="d-flex flex-row border-bottom border-dark message-head">
                 <div class="user-icon p-2">
                 <?php echo $this->Html->image('avatars/profile_default.png', 
                                 array(
@@ -21,8 +22,8 @@
                     <div class="d-flex justify-content-end mx-2 my-1">
                         <span class="align-self-end">Date</span>
                     </div>
-                </div>
-            </div>
+                </div> 
+            </div>-->
         </div>
         <div class="card-footer"></div>
     </div>

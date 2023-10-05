@@ -27,7 +27,8 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(res) {
                 if(res.status == 201) {
-                    window.location.replace(`${BASE_URL}success`);
+                    // window.location.replace(`${BASE_URL}success`);
+                    console.log(res.message)
                 }
             },
             error: function(res) {
