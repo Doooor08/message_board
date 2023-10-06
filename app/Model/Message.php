@@ -19,8 +19,11 @@ class Message extends AppModel {
     // Set message_id and created_at values
     public function beforeSave($options = array()) {
         if($this->id === null) {
-            $this->data['Message']['message_id'] = self::GenerateMessageID();
             $this->data['Message']['created_at'] = self::getDate();
+        }
+        
+        if(!isset($this->data['Message']['message_id'])) {
+            $this->data['Message']['message_id'] = self::GenerateMessageID();
         }
         
         return true;

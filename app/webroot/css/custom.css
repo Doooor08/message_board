@@ -20,3 +20,11 @@ a.message-link {
     color: var(--dark);
     text-decoration: none !important; 
 }
+.ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    padding: 2px 8px;
+    color: #444;
+}

@@ -1,4 +1,4 @@
-<?php echo json_encode($userData)?>
+<!-- <?php echo json_encode($userData)?> -->
 <div class="col-md-12">
     <div class="card p-5 mx-auto border-0 w-50" id="profile-card">
         <div class="card-body">

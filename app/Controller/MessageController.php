@@ -14,10 +14,22 @@ class MessageController extends AppController {
                     FROM tbl_messages  
                     LEFT JOIN tbl_users ON (tbl_messages.user_id = tbl_users.user_id) 
                     LEFT JOIN tbl_users_data ON (tbl_users_data.user_id = tbl_users.user_id) 
-                    WHERE tbl_messages.deleted_at IS NULL AND tbl_messages.recipient = :recipient";
-
+                    WHERE tbl_messages.deleted_at IS NULL AND (tbl_messages.user_id, tbl_messages.recipient, tbl_messages.created_at) IN (
+                        SELECT
+                            tbl_messages.user_id,
+                            tbl_messages.recipient,
+                            MIN(tbl_messages.created_at) AS min_created_at
+                        FROM tbl_messages
+                        WHERE tbl_messages.deleted_at IS NULL AND tbl_messages.recipient = :recipient
+                        GROUP BY
+                            tbl_messages.user_id,
+                            tbl_messages.recipient
+                        )
+                    ORDER BY
+                        tbl_messages.created_at DESC;";
             $params = array(
                 ':recipient' => $this->Session->read('User.user_id'),
+                // ':user_id' => $this->Session->read('User.user_id'),
             );
 
             $results = $this->Message->query($sql, $params);
@@ -63,7 +75,8 @@ class MessageController extends AppController {
                     FROM tbl_messages  
                     LEFT JOIN tbl_users ON (tbl_messages.user_id = tbl_users.user_id) 
                     LEFT JOIN tbl_users_data ON (tbl_users_data.user_id = tbl_users.user_id) 
-                    WHERE tbl_messages.deleted_at IS NULL AND tbl_messages.message_id = :id';
+                    WHERE tbl_messages.message_id = :id AND tbl_messages.deleted_at IS NULL AND tbl_messages.is_deleted = 0
+                    ORDER BY tbl_messages.created_at ASC';
 
             $params = array(
                 ':id' => $id,
@@ -102,7 +115,6 @@ class MessageController extends AppController {
         return $this->response->body(json_encode($response));
     }
     
-
     public function store() {
         $this->autoRender = false;
         if ($this->request->is('post')) {
@@ -123,6 +135,42 @@ class MessageController extends AppController {
                 $response = array(
                     'status' => 422,
                     'message' => 'Unprocessable Content: Failed to send message',
+                );
+            }
+        } else {
+            http_response_code(405);
+            $response = array(
+                'status' => 405,
+                'message' => 'Method not Allowed',
+            );
+        }
+        $this->response->type('json');
+        $this->response->body(json_encode($response));
+    }
+
+    public function storeReply() {
+        $this->autoRender = false;
+        if ($this->request->is('post')) { 
+            $message_id = $this->request->params['id'];
+            $data = $this->request->input('json_decode', true);
+            // Set message_id for reply in convo, 
+            // Set user_id based on user_id set in session
+            $data['message_id'] = $message_id;
+            $data['user_id'] = $this->Session->read('User.user_id');
+            $this->Message->set($data);
+
+            if ($this->Message->save($data)) {
+                http_response_code(201);
+                $response = array(
+                    'status' => 201,
+                    'message' => 'Message Sent',
+                    'data' => $this->Message->read()
+                );
+            } else {
+                http_response_code(422);
+                $response = array(
+                    'status' => 422,
+                    'message' => 'Unprocessable Content: Failed to send reply',
                 );
             }
         } else {

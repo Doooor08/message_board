@@ -1,7 +1,6 @@
 <?php 
 header('Content_type: application/json');
 App::uses('AppController', 'Controller');
-App::uses('BlowfishPasswordHasher', 'Controller/Component/Auth');
 
 class UserController extends AppController {
     public $uses = array('User','UserData');
@@ -81,9 +80,6 @@ class UserController extends AppController {
             $gender = $this->request->data['gender'] ?? null;
             $gender = ($gender === 'male') ? 'M' : (($gender === 'female') ? 'F' : null);           
             $description = $this->request->data['description'];
-            $email = $this->request->data['email'];
-            $password = $this->request->data['pass'];
-
             $file = $this->request->form['photo'];
             
             // Check if file exists
@@ -120,27 +116,35 @@ class UserController extends AppController {
                 return json_encode($response);
             }
             $filename = $upload['filename'];
-            $reHash = new BlowfishPasswordHasher();
             $updateUser = $this->User->updateAll(
                 array(
                     'User.name' => "'". $name. "'",
-                    'User.email' => "'". $email. "'",
-                    'User.password' => "'". $reHash->hash($password). "'",
                     'User.updated_at' => "'". $this->User->getDate(). "'",
                 ),
                 array('User.user_id' => $this->Session->read('User.user_id'))
             );
-            
-            $updateUserData = $this->UserData->updateAll(
-                array(
-                    'UserData.photo' => "'" . $filename . "'",
-                    'UserData.gender' => "'" . $gender . "'",
-                    'UserData.birthdate' => "'" . $birthdate . "'",
-                    'UserData.description' => "'" . $description . "'",
-                ),
-                array(
+            // $this->UserData->id = $this->Session->id;
+            // $this->UserData->set(array(
+            //     'user_id' => $this->Session->read('User.user_id'),
+            //     'photo' => $filename,
+            //     'gender' => $gender,
+            //     'birthdate' => $birthdate,
+            //     'description' => $description
+            // ));
+            // $updateUserData = $this->UserData->save();
+
+            $getRecord = $this->UserData->find('first', array(
+                'conditions' => array(
                     'UserData.user_id' => $this->Session->read('User.user_id')
+                )
             ));
+            // $getRecord['UserData']['user_id'] = $this->Session->read('User.user_id');
+            $getRecord['UserData']['photo'] = $filename;
+            $getRecord['UserData']['gender'] = $gender;
+            $getRecord['UserData']['birthdate'] = $birthdate;
+            $getRecord['UserData']['description'] = $description;
+            // Save to tbl_users_data
+            $updateUserData =  $this->UserData->save($getRecord);
 
             if(!$updateUser || !$updateUserData) {
                 http_response_code(422);

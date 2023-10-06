@@ -230,7 +230,7 @@
 		'defaults' => 'php',
 		'cookie' => 'user_session',
 		'timeout' => 3600, // 1 hour
-		'cookieTimeout' => 2147483647 // No expiry until user logs out or session destroyed
+		'cookieTimeout' => 0 // Destroy on user logs out
 	));
 
 /**

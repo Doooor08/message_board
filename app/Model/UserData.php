@@ -12,8 +12,8 @@ class UserData extends AppModel {
     
     public $validate = array(
         'photo' => array(
-            'rule' => array('fileSize', '<=', '5MB'), // Max file size: 5MB
-            'message' => 'The photo must be less than 5MB in size.',
+            'rule' => array('fileSize', '<=', '10MB'), // Max file size: 10MB
+            'message' => 'The photo must be less than 10MB in size.',
             'allowEmpty' => true, // Allow empty photo
             'required' => false, // Not required
             'on' => 'create', // Apply this rule on create action

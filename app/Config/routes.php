@@ -37,11 +37,14 @@
 	Router::connect('/profile', array('controller' => 'pages', 'action' => 'userProfile'));
 	Router::connect('/profile/edit', array('controller' => 'pages', 'action' => 'userProfileEdit'));
 	Router::connect('/profile/update', array('controller' => 'user', 'action' => 'update'));
+	Router::connect('/account/edit', array('controller' => 'pages', 'action' => 'userAccountEdit'));
+	Router::connect('/account/update', array('controller' => 'auth', 'action' => 'update'));
 	
 	Router::connect('/compose', array('controller' => 'pages', 'action' => 'messageCompose'));
 	Router::connect('/message/all', array('controller' => 'message', 'action' => 'index'));
 	Router::connect('/message/view/:id', array('controller' => 'message', 'action' => 'get'));
 	Router::connect('/message/store', array('controller' => 'message', 'action' => 'store'));
+	Router::connect('/message/reply/:id', array('controller' => 'message', 'action' => 'storeReply'));
 	Router::connect('/message/delete/:id', array());
 	Router::connect('/message/deleteAll/:id', array());
 

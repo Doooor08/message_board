@@ -11,6 +11,7 @@ class AuthController extends AppController {
 
         if ($this->request->is('post')) {
             $data = $this->request->input('json_decode', true);
+            $data['password'] = $this->User->hashPassword($data['password']);
             $this->User->set($data);
 
             if ($this->User->save($data)) {
@@ -67,9 +68,9 @@ class AuthController extends AppController {
             }
 
             $user = $this->User->verifyPassword($password, $findUser['User']['password']);
-            debug($user);
+            // debug($user);
             if(!$user) {
-                http_response_code(404);
+                http_response_code(422);
                 $response = array(
                     'status' => 422,
                     'message' => 'Password does not match',
@@ -103,6 +104,46 @@ class AuthController extends AppController {
     public function logout() {
         $this->Session->destroy();
         return $this->redirect('/login');
+    }
+
+    public function update() {
+        $this->autoRender = false;
+
+        if ($this->request->is('post')) {
+            $data = $this->request->input('json_decode', true);
+
+            // If password is in payload
+            if(isset($data['password'])) {
+                $data['password'] = $this->User->hashPassword($data['password']);
+            }
+
+            $this->User->id = $this->Session->read('User.id');
+            if ($this->User->save($data)) {
+                $this->User->id = $this->Session->read('User.id');
+                $this->User->saveField('updated_at', $this->User->getDate());
+                
+                http_response_code(200);
+                $response = array(
+                    'status' => 200,
+                    'message' => 'User Account Updated!',
+                );
+            } else {
+                http_response_code(422);
+                $response = array(
+                    'status' => 422,
+                    'message' => 'Unprocessable Content: Update failed',
+                );
+            }
+        }
+        else {
+            http_response_code(405);
+            $response = array(
+                'status' => 405,
+                'message' => 'Method not Allowed',
+            );
+        }
+        $this->response->type('json');
+        $this->response->body(json_encode($response));
     }
 
     private function setSession($data) {

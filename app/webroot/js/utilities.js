@@ -1,11 +1,6 @@
 $(document).ready(function() {
     $('.dropdown-toggle').dropdown();
 
-    // Click event for create message
-    $('#new-message').on('click', function() {
-
-    });
-
     // User Profile Edit
     // Auto preview image after selecting
     $("#profileUpload").click(function() {

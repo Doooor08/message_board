@@ -29,8 +29,19 @@
                         </li> -->
                     </ul>
                 </div>
-                <div class="col-md-8">
-                    <ul class="mb-0 p-0" id="message-container"></ul>
+                <div class="col-md-8 d-flex justify-content-between flex-column" style="height: 65vh !important;">
+                    <ul class="mb-0 p-0 overflow-auto" id="message-container"></ul>
+                    <div class="d-flex align-items-end mt-3" id="reply-container">
+                        <!-- <form id="message-reply" enctype="multipart/form-data">
+                            <div class="d-flex justify-content-end">
+                                <input type="hidden" name="msg_id" value="">
+                                <textarea name="reply" id="reply" cols="85" rows="2" class="form-control"></textarea>
+                                <div class="d-flex align-items-start">
+                                    <button type="submit" class="btn btn-primary ml-1">Reply</button>
+                                </div>
+                            </div>
+                        </form> -->
+                    </div>
                 </div>
             </div>
         </div>

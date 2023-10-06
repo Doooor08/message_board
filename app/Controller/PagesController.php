@@ -130,6 +130,16 @@ class PagesController extends AppController {
 		}
 	}
 
+	public function userAccountEdit() {
+		$this->layout = 'indexLayout';
+		$this->set('title', 'Account Settings');
+		$this->set('pageTitle', 'Change Account Settings');
+		// Check session 
+		if (!$this->Session->check('User')) {
+			$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
+		}
+	}
+	
 	public function messageCompose() {
 		$this->layout = 'indexLayout';
 		$this->set('title', 'Compose New Message');
@@ -140,13 +150,4 @@ class PagesController extends AppController {
 		}
 	}
 
-	// public function messageDetail() {
-	// 	$this->layout = 'indexLayout';
-	// 	$this->set('title', 'Message Body');
-	// 	$this->set('pageTitle', 'Message Details');
-	// 	// Check session 
-	// 	if (!$this->Session->check('User')) {
-	// 		$this->redirect(array('controller' => 'pages', 'action' => 'authLogin'));
-	// 	}
-	// }
 }
